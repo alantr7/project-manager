@@ -155,7 +155,7 @@ public class WorkspacesResource {
     @Transactional
     @Authenticated
     @Path("/{workspace}/members/{user}")
-    public Object kickMember(@Context SecurityContext context, @PathParam("workspace") String workspaceId, @PathParam("user") String userId) {
+    public Object kickMemberOrLeaveWorkspace(@Context SecurityContext context, @PathParam("workspace") String workspaceId, @PathParam("user") String userId) {
         var user = UserEntity.<UserEntity>findById(context.getUserPrincipal().getName());
         var workspace = WorkspaceEntity.<WorkspaceEntity>find("weak_id = ?1", workspaceId).firstResult();
         var collaborator = WorkspaceCollaboratorEntity.<WorkspaceCollaboratorEntity>find("user_id = ?1", userId).firstResult();
@@ -163,7 +163,7 @@ public class WorkspacesResource {
         if (collaborator == null)
             return Response.status(404).build();
 
-        if (!user.getId().equals(workspace.getOwner().getId()))
+        if (user.getId().equals(workspace.getOwner().getId()) == user.getId().equals(collaborator.getUser().getId()))
             return Response.status(403).build();
 
         collaborator.delete();
