@@ -39,7 +39,7 @@ public class BoardResource {
 
         var groups = BoardList.find("workspace_id = ?1", workspace.id).project(BoardList2DTO.class).list();
         var groupedCards = ProjectIssueEntity.getEntityManager().createQuery("" +
-                "SELECT NEW com.alantrumic.ednevnik.dto.board.BoardListCard2DTO(" +
+                "SELECT NEW com.github.alantr7.prepo.dto.board.BoardListCard2DTO(" +
                 "bc.list.id, bc.id, iss.id, iss.project.id, iss.title, iss.description, iss.creationDate, iss.state, iss.ind, iss.author" +
                 ")" +
                 " FROM issues iss LEFT JOIN board_cards bc ON iss.id = bc.issue.id WHERE iss.isResolved = false AND iss.project.workspace.weakId = :workspaceId", BoardListCard2DTO.class
@@ -48,7 +48,7 @@ public class BoardResource {
                 .getResultList().stream().collect(Collectors.groupingBy(obj -> obj.listId));
 
         var tasksQuery = ProjectIssueTaskEntity.getEntityManager().createQuery(
-                "SELECT NEW com.alantrumic.ednevnik.dto.ProjectIssueTaskDTO(t.id, t.text, t.creationDate, t.isCompleted, t.issue.id) FROM issue_tasks t", ProjectIssueTaskDTO.class);
+                "SELECT NEW com.github.alantr7.prepo.dto.ProjectIssueTaskDTO(t.id, t.text, t.creationDate, t.isCompleted, t.issue.id) FROM issue_tasks t", ProjectIssueTaskDTO.class);
 
         var labels = (List<Object[]>) ProjectIssueLabelEntity.getEntityManager().createNativeQuery(
                 "SELECT * FROM issues_labels LEFT JOIN labels ON issues_labels.issue_id = labels.id"
@@ -89,10 +89,9 @@ public class BoardResource {
     @POST
     @Path("/lists")
     @Transactional
-    public Object createList(@NotNull @FormParam("name") String name, @FormParam("criteria") String criteria) {
+    public Object createList(@NotNull @FormParam("name") String name) {
         var list = new BoardList();
         list.setName(name);
-        list.setCriteria(criteria);
 
         // TODO
         var workspace = WorkspaceEntity.<WorkspaceEntity>findAll().firstResult();

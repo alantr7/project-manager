@@ -1,6 +1,5 @@
 package com.github.alantr7.prepo.dto;
 
-import com.alantrumic.ednevnik.entity.*;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.github.alantr7.prepo.entity.ProjectFileEntity;
 import com.github.alantr7.prepo.entity.ProjectIssueEntity;

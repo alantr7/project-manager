@@ -1,6 +1,5 @@
 package com.github.alantr7.prepo.resources;
 
-import com.alantrumic.ednevnik.entity.*;
 import com.github.alantr7.prepo.entity.ProjectEntity;
 import com.github.alantr7.prepo.util.LogUtils;
 import com.github.alantr7.prepo.entity.ProjectIssueEntity;

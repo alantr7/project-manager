@@ -32,7 +32,7 @@ public class ListGroupsGroupDTO {
         this.id = group.id;
         this.name = group.getName();
         this.icon = group.getIcon();
-        String query = "SELECT NEW com.alantrumic.ednevnik.dto.ListGroupsProjectDTO(p.id, p.name, p.icon, :groupId, p.latestBuild, p.version, " +
+        String query = "SELECT NEW com.github.alantr7.prepo.dto.ListGroupsProjectDTO(p.id, p.name, p.icon, :groupId, p.latestBuild, p.version, " +
                 "SUM(CASE WHEN i.isResolved = true THEN 1 ELSE 0 END), " +
                 "SUM(CASE WHEN i.isResolved = false THEN 1 ELSE 0 END), " +
                 "COUNT(b)" +

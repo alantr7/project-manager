@@ -18,7 +18,6 @@ import javax.ws.rs.core.SecurityContext;
 
 import com.github.alantr7.prepo.dto.ListGroupsGroupDTO;
 import com.github.alantr7.prepo.dto.ListProjectsProjectDTO;
-import com.alantrumic.ednevnik.entity.*;
 
 import com.github.alantr7.prepo.entity.*;
 import io.quarkus.security.Authenticated;

@@ -19,7 +19,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
-import com.alantrumic.ednevnik.entity.*;
 import com.github.alantr7.prepo.dto.NotificationsDTO;
 import com.github.alantr7.prepo.entity.UserAvatarEntity;
 import com.github.alantr7.prepo.entity.UserEntity;

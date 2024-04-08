@@ -59,7 +59,7 @@ public class IssuesResource {
         var issues = ProjectIssueEntity.find("project_id = ?1 and isResolved = ?2", Sort.descending("creationDate"), projectId, closed).project(ProjectIssueDTO.class).<ProjectIssueDTO>list();
 
         var tasksQuery = ProjectIssueTaskEntity.getEntityManager().createQuery(
-                "SELECT NEW com.alantrumic.ednevnik.dto.ProjectIssueTaskDTO(t.id, t.text, t.creationDate, t.isCompleted, t.issue.id) FROM issue_tasks t WHERE t.issue.project.id = :projectId", ProjectIssueTaskDTO.class)
+                "SELECT NEW com.github.alantr7.prepo.dto.ProjectIssueTaskDTO(t.id, t.text, t.creationDate, t.isCompleted, t.issue.id) FROM issue_tasks t WHERE t.issue.project.id = :projectId", ProjectIssueTaskDTO.class)
                 .setParameter("projectId", projectId);
 
         var labels = (List<Object[]>) ProjectIssueLabelEntity.getEntityManager().createNativeQuery(
