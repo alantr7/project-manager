@@ -16,6 +16,7 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.SecurityContext;
 
+import com.github.alantr7.prepo.annotations.WorkspaceMember;
 import com.github.alantr7.prepo.dto.ListGroupsGroupDTO;
 import com.github.alantr7.prepo.dto.ListProjectsProjectDTO;
 
@@ -44,6 +45,7 @@ public class WorkspacesResource {
     @Path("/{workspace}/projects")
     @Transactional
     @Authenticated
+    @WorkspaceMember
     public Object createProject(@NotNull @PathParam("workspace") String weakId, @NotNull @FormParam("name") String name, @FormParam("group") Long groupId, @FormParam("version") String version) {
         var workspace = WorkspaceEntity.<WorkspaceEntity>find("weak_id = ?1", weakId).firstResult();
         if (workspace == null)
@@ -74,6 +76,7 @@ public class WorkspacesResource {
     @Transactional
     @Path("/{workspace}/projects")
     @Produces("application/json")
+    @WorkspaceMember
     public Object listProjects(@PathParam("workspace") @NotNull String weakId, @QueryParam("group") Boolean group) {
         var workspace = WorkspaceEntity.<WorkspaceEntity>find("weak_id = ?1", weakId).firstResult();
         if (workspace == null)
