@@ -10,29 +10,57 @@ import com.github.alantr7.prepo.util.WhereQuery;
 
 import io.quarkus.panache.common.Sort;
 
+import java.util.Arrays;
+
 @Resource
 @Path("/api/v1/logs")
 public class LogsResource {
     
     @GET
-    public Object getActivityLogs(@QueryParam("before") Long before, @QueryParam("after") Long after, @QueryParam("action") LogEntryEntity.Action action) {
-        if (before == null && after == null && action == null) {
+    // TODO: Clean up this mess
+    public Object getActivityLogs(@QueryParam("before") Long before, @QueryParam("after") Long after, @QueryParam("action") LogEntryEntity.Action action, @QueryParam("authors") String authorsRaw, @QueryParam("projects") String projectsRaw) {
+        if (before == null && after == null && action == null && authorsRaw == null && projectsRaw == null) {
             return LogEntryEntity.listAll(Sort.by("timestamp").descending());
         }
 
-        var query = new WhereQuery();
-        
+        var queryBuilder = new StringBuilder();
+
         if (before != null) {
-            query.put("timestamp < %n", before);
+            queryBuilder.append(" AND l.timestamp < :timestampBefore");
         }
         if (after != null) {
-            query.put("timestamp > %n", after);
+            queryBuilder.append(" AND l.timestamp > :timestampAfter");
         }
         if (action != null) {
-            query.put("action = %n", action);
+            queryBuilder.append(" AND l.action = :action");
+        }
+        if (authorsRaw != null) {
+            queryBuilder.append(" AND l.user.id IN (:authors)");
+        }
+        if (projectsRaw != null) {
+            queryBuilder.append(" AND l.project_name IN (:projects)");
+        }
+        if (queryBuilder.toString().startsWith(" AND "))
+            queryBuilder.delete(0, 5);
+
+        var query = LogEntryEntity.getEntityManager().createQuery("SELECT l FROM activity_logs l WHERE " + queryBuilder.toString() + " ORDER BY timestamp DESC", LogEntryEntity.class);
+        if (before != null) {
+            query.setParameter("timestampBefore", before);
+        }
+        if (after != null) {
+            query.setParameter("timestampAfter", after);
+        }
+        if (action != null) {
+            query.setParameter("action", action);
+        }
+        if (authorsRaw != null) {
+            query.setParameter("authors", Arrays.asList(authorsRaw.contains(";") ? authorsRaw.split(";") : new String[] { authorsRaw }));
+        }
+        if (projectsRaw != null) {
+            query.setParameter("projects", Arrays.asList(projectsRaw.contains(";") ? projectsRaw.split(";") : new String[] { projectsRaw }));
         }
 
-        return LogEntryEntity.find(query.getQuery(), Sort.by("timestamp").descending(), query.getParameters()).list();
+        return query.getResultList();
     }
 
 }
