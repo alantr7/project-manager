@@ -76,8 +76,9 @@ public class WorkspacesResource {
     @Transactional
     @Path("/{workspace}/projects")
     @Produces("application/json")
+    @SuppressWarnings("unchecked")
     @WorkspaceMember
-    public Object listProjects(@PathParam("workspace") @NotNull String weakId, @QueryParam("group") Boolean group) {
+    public Object listProjects(@PathParam("workspace") @NotNull String weakId, @QueryParam("group") Boolean group, @QueryParam("q") String q) {
         var workspace = WorkspaceEntity.<WorkspaceEntity>find("weak_id = ?1", weakId).firstResult();
         if (workspace == null)
             return Response.status(404).build();
@@ -91,7 +92,11 @@ public class WorkspacesResource {
         }
 
         var list = new ArrayList<>();
-        ProjectEntity.<ProjectEntity>streamAll().forEach(item -> list.add(new ListProjectsProjectDTO(item)));
+        ProjectEntity.getEntityManager().createQuery("SELECT p FROM projects p WHERE p.workspace.id = :workspaceId AND p.name LIKE :q")
+                .setParameter("workspaceId", workspace.id)
+                .setParameter("q", "%" + q + "%")
+                .getResultList()
+                .forEach(item -> list.add(new ListProjectsProjectDTO((ProjectEntity) item)));
 
         return list;
     }
