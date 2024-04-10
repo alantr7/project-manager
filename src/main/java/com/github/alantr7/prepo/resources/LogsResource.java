@@ -19,7 +19,7 @@ public class LogsResource {
     @GET
     // TODO: Clean up this mess
     public Object getActivityLogs(@QueryParam("before") Long before, @QueryParam("after") Long after, @QueryParam("action") LogEntryEntity.Action action, @QueryParam("authors") String authorsRaw, @QueryParam("projects") String projectsRaw) {
-        if (before == null && after == null && action == null && authorsRaw == null) {
+        if (before == null && after == null && action == null && authorsRaw == null && projectsRaw == null) {
             return LogEntryEntity.listAll(Sort.by("timestamp").descending());
         }
 
