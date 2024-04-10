@@ -137,6 +137,7 @@ public class WorkspacesResource {
     @GET
     @Transactional
     @Path("/{workspace}/members")
+    // TODO: Return user roles as well
     public Object getMembers(@PathParam("workspace") String workspaceId) {
         var workspace = WorkspaceEntity.<WorkspaceEntity>find("weak_id = ?1", workspaceId).firstResult();
         if (workspace == null)
@@ -144,9 +145,10 @@ public class WorkspacesResource {
 
         var map = new LinkedHashMap<String, Object>();
 
-        var collabs = WorkspaceCollaboratorEntity.getEntityManager().createQuery("SELECT wc.user FROM workspaces_collaborators wc WHERE wc.workspace.id = :workspaceId")
+        var collabs = new ArrayList<>(WorkspaceCollaboratorEntity.getEntityManager().createQuery("SELECT wc.user FROM workspaces_collaborators wc WHERE wc.workspace.id = :workspaceId")
                 .setParameter("workspaceId", workspace.id)
-                .getResultList();
+                .getResultList());
+        collabs.add(workspace.getOwner());
 
         var invitations = WorkspaceInvitationEntity.getEntityManager().createQuery("SELECT wi.user FROM workspaces_invitations wi WHERE wi.workspace.id = :workspaceId")
                 .setParameter("workspaceId", workspace.id)
