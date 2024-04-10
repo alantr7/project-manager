@@ -29,6 +29,9 @@ public class LogEntryEntity extends PanacheEntity {
     @Column(name = "contextual_data")
     String contextualData;
 
+    @Column(name = "project_name")
+    String projectName;
+
     long timestamp;
 
     @Column(name = "contextual_id")
@@ -65,6 +68,15 @@ public class LogEntryEntity extends PanacheEntity {
     @JsonGetter("contextual_id")
     public String getContextualId() {
         return contextualId;
+    }
+
+    @JsonGetter("project_name")
+    public String getProjectName() {
+        return projectName;
+    }
+
+    public void setProjectName(String projectName) {
+        this.projectName = projectName;
     }
 
     public long getTimestamp() {
